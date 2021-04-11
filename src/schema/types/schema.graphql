@@ -516,12 +516,10 @@ type Order {
 
 input OrderInput {
   id: ID!
-  token: String!
 }
 
 input CancelOrderInput {
   id: ID!
-  token: String!
 }
 
 type CancelOrderResponse {
@@ -556,7 +554,6 @@ input OrderSetOrdersInput {
   offset: Int
   orderStatus: OrderStatus
   stopOrderType: StopOrderType
-  token: String!
 }
 
 type OrderSetOrdersResult {
@@ -567,7 +564,6 @@ type OrderSetOrdersResult {
 input OrderSetInput {
   id: ID!
   stopOrderType: StopOrderType
-  token: String!
 }
 
 input CreateOrderSetInput {
@@ -585,7 +581,6 @@ input CreateOrderSetInput {
   stopPrice: Float
   trailingStopPercent: Float
   stopTriggerType: StopTriggerType
-  token: String!
 }
 
 input UpdateOrderSetInput {
@@ -596,13 +591,11 @@ input UpdateOrderSetInput {
   stopPrice: Float
   trailingStopPercent: Float
   stopTriggerType: StopTriggerType
-  token: String!
 }
 
 input CancelOrderSetInput {
   orderSetId: ID!
   stopOrderTypes: [StopOrderType!]
-  token: String!
 }
 
 type CreateOrderSetResult {
@@ -638,7 +631,6 @@ type Position {
 
 input PositionInput {
   id: ID!
-  token: String!
 }
 
 input ClosePositionsInput {
@@ -646,7 +638,6 @@ input ClosePositionsInput {
   price: Float
   percent: Float
   exchangeAccountIds: [ID!]!
-  token: String!
 }
 
 type ClosePositionsResult {
@@ -658,7 +649,6 @@ input AddStopToPositionsInput {
   stopPrice: Float!
   exchangeAccountIds: [ID!]!
   stopTriggerPriceType: StopTriggerType!
-  token: String!
 }
 
 type AddStopToPositionsResult {
@@ -671,7 +661,6 @@ input AddTslToPositionsInput {
   tslPercent: Float!
   exchangeAccountIds: [ID!]!
   stopTriggerPriceType: StopTriggerType!
-  token: String!
 }
 
 type AddTslToPositionsResult {
@@ -701,17 +690,14 @@ type ExchangeAccount {
 
 input ExchangeAccountInput {
   id: ID!
-  token: String!
 }
 
 input ExchangeAccountsInput {
   membershipId: ID!
-  token: String!
 }
 
 input CreateExchangeAccountInput {
   groupId: ID!
-  token: String!
   apiKey: String!
   membershipId: ID!
   apiSecret: String!
@@ -725,7 +711,6 @@ type CreateExchangeAccountResult {
 
 input DeleteExchangeAccountInput {
   id: ID!
-  token: String!
 }
 
 type DeleteExchangeAccountResult {
@@ -735,7 +720,6 @@ type DeleteExchangeAccountResult {
 
 input ToggleExchangeAccountActiveInput {
   id: ID!
-  token: String!
 }
 
 type ToggleExchangeAccountActiveResult {
@@ -747,7 +731,6 @@ input UpdateExchangeAccountInput {
   id: ID!
   apiKey: String!
   apiSecret: String!
-  token: String!
 }
 
 type UpdateExchangeAccountResult {
@@ -758,7 +741,6 @@ type UpdateExchangeAccountResult {
 input ExchangeAccountPositionsInput {
   limit: Int
   offset: Int
-  token: String!
 }
 
 type ExchangeAccountPositionsResult {
@@ -768,7 +750,6 @@ type ExchangeAccountPositionsResult {
 
 input ExchangeAccountSymbolPositionInput {
   symbol: String!
-  token: String!
 }
 
 type ExchangeAccountSymbolPositionResult {
@@ -788,7 +769,6 @@ type AsyncOperation {
 
 input AsyncOperationStatusInput {
   id: ID!
-  token: String!
 }
 
 type AsyncOperationStatus {
@@ -878,19 +858,16 @@ input MemberPositionsInput {
   symbol: String
   exchange: Exchange
   side: PositionSide
-  token: String!
 }
 
 input MemberOrdersInput {
   limit: Int
   offset: Int
-  token: String!
 }
 
 input MemberExchangeAccountsInput {
   exchange: Exchange
   activeOnly: Boolean
-  token: String!
 }
 
 ###########################
