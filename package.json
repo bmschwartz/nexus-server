@@ -1,0 +1,61 @@
+{
+  "name": "nexus-user",
+  "scripts": {
+    "start": "node dist/server",
+    "clean": "rm -rf dist",
+    "build": "npm -s run clean && npm -s run generate && tsc --build tsconfig.json && npm -s run copy:schema",
+    "copy:schema": "cp src/schema/types/schema.graphql dist/schema/types",
+    "generate": "npm -s run generate:prisma",
+    "generate:prisma": "prisma generate",
+    "postinstall": "npm -s run generate",
+    "dev": "ts-node-dev src/server --no-notify --respawn --transpileOnly",
+    "lint:ts": "tslint 'src/**/*.{ts,tsx,js}'"
+  },
+  "dependencies": {
+    "@prisma/client": "^2.20.1",
+    "amqp-ts": "^1.8.0",
+    "apollo": "^2.32.5",
+    "apollo-server": "^2.15.1",
+    "apollo-server-express": "^2.22.2",
+    "aws-amplify": "^3.3.20",
+    "aws-sdk": "^2.848.0",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "btcpay": "^0.2.4",
+    "graphql": "15.3.0",
+    "graphql-middleware": "^4.0.2",
+    "graphql-shield": "^7.3.3",
+    "jsonwebtoken": "^8.5.1",
+    "node-schedule": "^2.0.0",
+    "winston": "^3.3.3",
+    "winston-cloudwatch": "^2.5.1"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.2",
+    "@types/body-parser": "^1.19.0",
+    "@types/express": "^4.17.11",
+    "@types/jsonwebtoken": "^8.5.0",
+    "@types/node": "12.12.50",
+    "dotenv": "^8.2.0",
+    "fs": "0.0.1-security",
+    "path": "^0.12.7",
+    "prisma": "^2.20.1",
+    "ts-node": "8.10.2",
+    "ts-node-dev": "1.0.0-pre.50",
+    "tslint": "^6.1.3",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-consistent-codestyle": "^1.16.0",
+    "tslint-eslint-rules": "^5.4.0",
+    "tslint-microsoft-contrib": "^6.2.0",
+    "typescript": "^4.1.5"
+  },
+  "prettier": {
+    "semi": false,
+    "trailingComma": "all",
+    "singleQuote": false,
+    "printWidth": 80
+  },
+  "engines": {
+    "node": ">=10.0.0"
+  }
+}

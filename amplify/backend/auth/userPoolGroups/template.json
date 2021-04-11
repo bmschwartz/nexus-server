@@ -1,0 +1,55 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Parameters": {
+        "authnexususer6fe64fca6fe64fcaUserPoolId": {
+            "Type": "String",
+            "Default": "authnexususer6fe64fca6fe64fcaUserPoolId"
+        },
+        
+        "authnexususer6fe64fca6fe64fcaAppClientID": {
+            "Type": "String",
+            "Default": "authnexususer6fe64fca6fe64fcaAppClientID"
+        },
+        "authnexususer6fe64fca6fe64fcaAppClientIDWeb": {
+            "Type": "String",
+            "Default": "authnexususer6fe64fca6fe64fcaAppClientIDWeb"
+        },
+        "AuthRoleArn": {
+            "Type": "String"
+        },
+        "UnauthRoleArn": {
+            "Type": "String"
+        },
+        "env": {
+            "Type": "String"
+        }
+    },
+    "Conditions": {
+        "ShouldNotCreateEnvResources": {
+            "Fn::Equals": [
+                {
+                    "Ref": "env"
+                },
+                "NONE"
+            ]
+        }
+    },
+    "Resources": {
+    
+        "nexususerdevGroup": {
+          "Type" : "AWS::Cognito::UserPoolGroup",
+          "Properties" : {
+              "GroupName" : "nexususerdev",
+              "Precedence" : 1,
+              
+              "UserPoolId" : {
+                "Ref": "authnexususer6fe64fca6fe64fcaUserPoolId"
+              } 
+            }
+        },
+        
+    
+    
+    },
+    
+}

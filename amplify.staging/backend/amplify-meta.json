@@ -1,0 +1,35 @@
+{
+  "providers": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-tradenexus-dev-210853-authRole",
+      "UnauthRoleArn": "arn:aws:iam::616771248928:role/amplify-tradenexus-dev-210853-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::616771248928:role/amplify-tradenexus-dev-210853-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-tradenexus-dev-210853-deployment",
+      "UnauthRoleName": "amplify-tradenexus-dev-210853-unauthRole",
+      "StackName": "amplify-tradenexus-dev-210853",
+      "StackId": "arn:aws:cloudformation:us-east-1:616771248928:stack/amplify-tradenexus-dev-210853/d9e69290-758c-11eb-8925-122e54527a47",
+      "AmplifyAppId": "d26bcuo33fes59"
+    }
+  },
+  "auth": {
+    "tradenexusAmplify": {
+      "service": "Cognito",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "customAuth": false,
+      "providerMetadata": {
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-tradenexus-dev-210853-deployment/amplify-cfn-templates/auth/tradenexusAmplify-cloudformation-template.yml",
+        "logicalId": "authtradenexusAmplify"
+      },
+      "lastPushTimeStamp": "2021-02-23T21:02:47.502Z",
+      "output": {
+        "UserPoolId": "us-east-1_x35b5R7fc",
+        "AppClientIDWeb": "797mk3moh4j7eqaaa116ogbgnn",
+        "AppClientID": "4g536u9sdp611ldsuoo3g0mb45",
+        "UserPoolName": "trdenexususerpool"
+      },
+      "lastPushDirHash": "S4h/yxRCZEt1JF9gjMvz01RO5LI="
+    }
+  }
+}

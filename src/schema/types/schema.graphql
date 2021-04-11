@@ -1,0 +1,966 @@
+scalar DateTime
+
+type Query {
+  # User
+  me: User
+  userIdByEmail(input: UserIdByEmailInput!): ID
+
+  # Group
+  myGroup: Group
+  allGroups: [Group!]!
+  group(input: GroupInput!): Group
+  groupExists(input: GroupExistsInput!): Boolean!
+
+  # PlatformFee
+  activePlatformFee: PlatformFee
+
+  # GroupMembership
+  membership(input: MembershipInput!): GroupMembership!
+  myMembership(input: MyMembershipInput!): GroupMembership!
+  myMemberships(input: MyMembershipsInput): [GroupMembership!]
+  groupMembers(input: GroupMembersInput!): [GroupMembership!]
+  membershipRequests(input: MembershipRequestsInput!): [GroupMembership!]
+
+  order(input: OrderInput!): Order
+  orderSet(input: OrderSetInput!): OrderSet
+
+  bitmexCurrencies: [BitmexCurrency!]!
+  binanceCurrencies: [BinanceCurrency!]!
+  currency(input: CurrencyInput!): CurrencyResponse
+
+  position(input: PositionInput!): Position
+
+  asyncOperationStatus(input: AsyncOperationStatusInput!): AsyncOperationStatus
+
+  exchangeAccount(input: ExchangeAccountInput!): ExchangeAccount
+  exchangeAccounts(input: ExchangeAccountsInput!): [ExchangeAccount!]!
+}
+
+type Mutation {
+  # User
+  loginUser(input: LoginUserInput!): LoginResponse!
+  signupUser(input: SignupUserInput!): SignUpResponse!
+  verifySignUpCode(input: VerifySignUpCodeInput!): VerifySignUpCodeResponse!
+
+  # Group
+  createGroup(input: CreateGroupInput!): Group
+  renameGroup(input: RenameGroupInput!): Group
+  updateGroupDescription(input: UpdateGroupDescriptionInput!): Group
+  disableGroup(input: DisableGroupInput!): Group
+
+  # GroupMembership
+  joinGroup(input: JoinGroupInput!): JoinGroupResult
+  requestGroupAccess(input: RequestGroupAccessInput!): GroupMembership
+  createMembership(input: CreateGroupMembershipInput!): CreateGroupMembershipResult
+  updateMembershipRole(input: UpdateMembershipRoleInput!): GroupMembership
+  updateMembershipStatus(input: UpdateMembershipStatusInput!): GroupMembership
+  updateMembershipActive(input: UpdateMembershipActiveInput!): GroupMembership
+  deleteMembership(input: DeleteMembershipInput!): DeleteMembershipResult
+
+  # GroupSubscription
+  createGroupSubscription(input: CreateGroupSubscriptionInput!): CreateGroupSubscriptionResult
+  updateGroupSubscription(input: UpdateGroupSubscriptionInput!): UpdateGroupSubscriptionResult
+  deleteGroupSubscription(input: DeleteGroupSubscriptionInput!): DeleteGroupSubscriptionResult
+  toggleSubscriptionActive(input: ToggleSubscriptionActiveInput!): ToggleSubscriptionActiveResult
+
+  # MemberSubscription
+  payMemberSubscription(input: PayMemberSubscriptionInput!): PayMemberSubscriptionResult
+  switchSubscriptionOption(input: SwitchSubscriptionOptionInput!): SwitchSubscriptionOptionResult
+  cancelMemberSubscription(input: CancelMemberSubscriptionInput!): CancelMemberSubscriptionResult
+  activateMemberSubscription(input: ActivateMemberSubscriptionInput!): ActivateMemberSubscriptionResult
+
+  # SubscriptionInvoice
+  resetPayment(input: ResetPaymentInput!): ResetPaymentResult
+
+  # OrderSet
+  createOrderSet(input: CreateOrderSetInput!): CreateOrderSetResult
+  updateOrderSet(input: UpdateOrderSetInput!): UpdateOrderSetResult
+  cancelOrderSet(input: CancelOrderSetInput!): CancelOrderSetResult
+
+  # Order / Position
+  cancelOrder(input: CancelOrderInput!): CancelOrderResponse
+  closePositions(input: ClosePositionsInput!): ClosePositionsResult
+  addStopToPositions(input: AddStopToPositionsInput!): [AddStopToPositionsResult!]
+  addTslToPositions(input: AddTslToPositionsInput!): [AddTslToPositionsResult!]
+
+  # ExchangeAccount
+  createExchangeAccount(input: CreateExchangeAccountInput!): CreateExchangeAccountResult
+  deleteExchangeAccount(input: DeleteExchangeAccountInput!): DeleteExchangeAccountResult!
+  updateExchangeAccount(input: UpdateExchangeAccountInput!): UpdateExchangeAccountResult!
+  toggleExchangeAccountActive(input: ToggleExchangeAccountActiveInput!): ToggleExchangeAccountActiveResult!
+}
+
+########################
+#  User
+########################
+type User {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  email: String!
+  username: String!
+  userType: UserType!
+  admin: Boolean!
+  memberships: [GroupMembership!]!
+}
+
+input LoginUserInput {
+  email: String!
+  password: String!
+}
+
+input SignupUserInput {
+  email: String!
+  username: String!
+  password: String!
+  userType: UserType!
+}
+
+input UserIdByEmailInput {
+  email: String!
+}
+
+input VerifySignUpCodeInput {
+  email: String!
+  code: String!
+}
+
+type LoginResponse {
+  token: String
+}
+
+type VerifySignUpCodeResponse {
+  token: String
+  error: String
+}
+
+type SignUpResponse {
+  success: Boolean!
+  error: String
+}
+
+enum UserType {
+  OWNER
+  TRADER
+  MEMBER
+}
+
+########################
+#  PlatformFee
+########################
+type PlatformFee {
+  id: ID!
+  price: Float!
+  active: Boolean!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+########################
+#  Group
+########################
+type Group {
+  id: ID!
+  name: String!
+  active: Boolean!
+  description: String!
+  members(input: GroupMembersInput): GroupMembersResult
+  subscriptionOptions: [GroupSubscription!]!
+  orderSets(limit: Int, offset: Int): GroupOrderSets!
+  orderSet(input: OrderSetInput!): OrderSet
+  symbolsWithPosition: SymbolsWithPositionResult
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type GroupOrderSets {
+  orderSets: [OrderSet!]!
+  totalCount: Int!
+}
+
+type SymbolsWithPositionResult {
+  binance: [BinanceCurrency!]!
+  bitmex: [BitmexCurrency!]!
+}
+
+input CreateGroupInput {
+  name: String!
+  email: String
+  discord: String
+  telegram: String
+  description: String!
+  payoutAddress: String
+  payInPlatform: Boolean!
+  subscriptionOptions: [GroupSubscriptionInput!]!
+}
+
+input GroupSubscriptionInput {
+  fee: Float!
+  duration: Int!
+  description: String
+}
+
+input RenameGroupInput {
+  groupId: ID!
+  name: String!
+}
+
+input UpdateGroupDescriptionInput {
+  groupId: ID!
+  description: String!
+}
+
+input DisableGroupInput {
+  groupId: ID!
+}
+
+input GroupInput {
+  groupId: ID!
+}
+
+input GroupExistsInput {
+  name: String!
+}
+
+input GroupMembersInput {
+  limit: Int
+  offset: Int
+  roles: [MembershipRole!]
+  statuses: [MembershipStatus!]
+}
+
+type GroupMembersResult {
+  members: [GroupMembership!]!
+  totalCount: Int!
+}
+
+########################
+#  GroupMembership
+########################
+type GroupMembership {
+  id: ID!
+  group: Group!
+  member: User!
+  active: Boolean!
+  role: MembershipRole!
+  status: MembershipStatus!
+  subscription: MemberSubscription
+  orders(input: MemberOrdersInput!): MemberOrdersResult!
+  positions(input: MemberPositionsInput!): MemberPositionsResult!
+  exchangeAccounts(input: MemberExchangeAccountsInput): [ExchangeAccount!]!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+enum MembershipStatus {
+  APPROVED
+  DENIED
+  PENDING
+}
+
+enum MembershipRole {
+  MEMBER
+  TRADER
+  ADMIN
+}
+
+input MembershipInput {
+  membershipId: ID!
+}
+
+input MyMembershipInput {
+  groupId: ID!
+}
+
+input MyMembershipsInput {
+  roles: [MembershipRole!]
+  statuses: [MembershipStatus!]
+}
+
+input JoinGroupInput {
+  groupId: ID!
+  subscriptionOptionId: ID
+}
+
+type JoinGroupResult {
+  membershipId: ID
+  error: String
+}
+
+input RequestGroupAccessInput {
+  groupId: ID!
+}
+
+input MembershipRequestsInput {
+  groupId: ID!
+}
+
+input CreateGroupMembershipInput {
+  groupId: ID!
+  memberId: ID!
+  role: MembershipRole!
+  status: MembershipStatus!
+}
+
+type CreateGroupMembershipResult {
+  membershipId: ID
+  error: String
+}
+
+input UpdateMembershipRoleInput {
+  groupId: ID!
+  membershipId: ID!
+  role: MembershipRole!
+}
+
+input UpdateMembershipStatusInput {
+  groupId: ID!
+  membershipId: ID!
+  status: MembershipStatus!
+}
+
+input UpdateMembershipActiveInput {
+  active: Boolean!
+  membershipId: ID!
+}
+
+input DeleteMembershipInput {
+  groupId: ID!
+  membershipId: ID!
+}
+
+type DeleteMembershipResult {
+  success: Boolean!
+  error: String
+}
+
+
+########################
+#  GroupSubscription
+########################
+type GroupSubscription {
+  id: ID!
+  group: Group!
+  active: Boolean!
+  price: Float!
+  duration: Int!
+  description: String
+  memberCount: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+input CreateGroupSubscriptionInput {
+  fee: Float!
+  duration: Int!
+  description: String
+}
+
+type CreateGroupSubscriptionResult {
+  success: Boolean!
+  error: String
+}
+
+input UpdateGroupSubscriptionInput {
+  fee: Float!
+  subscriptionId: ID!
+  description: String
+}
+
+type UpdateGroupSubscriptionResult {
+  success: Boolean!
+  error: String
+}
+
+input DeleteGroupSubscriptionInput {
+  subscriptionId: ID!
+}
+
+type DeleteGroupSubscriptionResult {
+  success: Boolean!
+  error: String
+}
+
+input ToggleSubscriptionActiveInput {
+  subscriptionId: ID!
+}
+
+type ToggleSubscriptionActiveResult {
+  success: Boolean!
+  error: String
+}
+
+
+########################
+#  MemberSubscription
+########################
+type MemberSubscription {
+  id: ID!
+  active: Boolean!
+  currentPrice: Float
+  recurring: Boolean!
+  startDate: DateTime
+  endDate: DateTime
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  membership: GroupMembership!
+  invoices: [SubscriptionInvoice!]!
+  pendingInvoice: SubscriptionInvoice
+  groupSubscription: GroupSubscription!
+}
+
+input ResetPaymentInput {
+  invoiceId: ID!
+}
+
+type ResetPaymentResult {
+  error: String
+}
+
+input PayMemberSubscriptionInput {
+  groupId: ID!
+  membershipId: ID!
+  subscriptionOptionId: ID!
+}
+
+type PayMemberSubscriptionResult {
+  invoiceId: String
+  error: String
+}
+
+input ActivateMemberSubscriptionInput {
+  subscriptionId: ID!
+}
+
+type ActivateMemberSubscriptionResult {
+  success: Boolean!
+  error: String
+}
+
+input SwitchSubscriptionOptionInput {
+  membershipId: ID!
+  subscriptionOptionId: ID!
+}
+
+type SwitchSubscriptionOptionResult {
+  success: Boolean!
+  error: String
+}
+
+input CancelMemberSubscriptionInput {
+  subscriptionId: ID!
+}
+
+type CancelMemberSubscriptionResult {
+  success: Boolean!
+  error: String
+}
+
+########################
+#  SubscriptionInvoice
+########################
+type SubscriptionInvoice {
+  id: ID!
+  email: String!
+  btcPaid: Float
+  btcPrice: Float
+  usdPrice: Float!
+  status: InvoiceStatus!
+  subscription: MemberSubscription!
+
+  remoteId: ID
+  token: ID
+
+  periodStart: DateTime
+  periodEnd: DateTime
+  expiresAt: DateTime
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+enum InvoiceStatus {
+  NEW
+  PAID
+  CONFIRMED
+  COMPLETE
+  EXPIRED
+  INVALID
+}
+
+###################
+# Order
+###################
+type Order {
+  id: ID!
+  orderSet: OrderSet!
+  side: OrderSide!
+  exchange: Exchange!
+  orderType: OrderType!
+  status: OrderStatus!
+  closeOrder: Boolean!
+  leverage: Float!
+  price: Float
+  quantity: Float
+  stopPrice: Float
+  trailingStopPercent: Float
+  stopTriggerType: StopTriggerType
+  filledQty: Float
+  filledPrice: Float
+  symbol: String!
+  error: String
+  lastTimestamp: DateTime!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  exchangeAccount: ExchangeAccount!
+}
+
+input OrderInput {
+  id: ID!
+  token: String!
+}
+
+input CancelOrderInput {
+  id: ID!
+  token: String!
+}
+
+type CancelOrderResponse {
+  success: Boolean!
+  error: String
+}
+
+###################
+# OrderSet
+###################
+type OrderSet {
+  id: ID!
+  exchange: Exchange!
+  symbol: String!
+  price: Float
+  side: OrderSide!
+  orderType: OrderType!
+  closeOrderSet: Boolean!
+  orders(input: OrderSetOrdersInput!): OrderSetOrdersResult!
+  percent: Float!
+  leverage: Float!
+  stopPrice: Float
+  trailingStopPercent: Float
+  stopTriggerType: StopTriggerType
+  description: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+input OrderSetOrdersInput {
+  limit: Int
+  offset: Int
+  orderStatus: OrderStatus
+  stopOrderType: StopOrderType
+  token: String!
+}
+
+type OrderSetOrdersResult {
+  totalCount: Int!
+  orders: [Order!]!
+}
+
+input OrderSetInput {
+  id: ID!
+  stopOrderType: StopOrderType
+  token: String!
+}
+
+input CreateOrderSetInput {
+  groupId: ID!
+  exchangeAccountIds: [ID!]!
+  symbol: String!
+  exchange: Exchange!
+  description: String
+  side: OrderSide!
+  orderType: OrderType!
+  closeOrderSet: Boolean!
+  leverage: Float!
+  price: Float
+  percent: Float
+  stopPrice: Float
+  trailingStopPercent: Float
+  stopTriggerType: StopTriggerType
+  token: String!
+}
+
+input UpdateOrderSetInput {
+  orderSetId: ID!
+  description: String!
+  leverage: Float!
+  price: Float
+  stopPrice: Float
+  trailingStopPercent: Float
+  stopTriggerType: StopTriggerType
+  token: String!
+}
+
+input CancelOrderSetInput {
+  orderSetId: ID!
+  stopOrderTypes: [StopOrderType!]
+  token: String!
+}
+
+type CreateOrderSetResult {
+  orderSet: OrderSet
+}
+
+type UpdateOrderSetResult {
+  operationId: ID
+  error: String
+}
+
+type CancelOrderSetResult {
+  success: Boolean!
+  error: String
+}
+
+###################
+# Position
+###################
+type Position {
+  id: ID!
+  exchangeAccount: ExchangeAccount!
+  side: PositionSide!
+  exchange: Exchange!
+  quantity: Float
+  avgPrice: Float
+  symbol: String!
+  isOpen: Boolean!
+  leverage: Float
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+input PositionInput {
+  id: ID!
+  token: String!
+}
+
+input ClosePositionsInput {
+  symbol: String!
+  price: Float
+  percent: Float
+  exchangeAccountIds: [ID!]!
+  token: String!
+}
+
+type ClosePositionsResult {
+  orderSet: OrderSet
+}
+
+input AddStopToPositionsInput {
+  symbol: String!
+  stopPrice: Float!
+  exchangeAccountIds: [ID!]!
+  stopTriggerPriceType: StopTriggerType!
+  token: String!
+}
+
+type AddStopToPositionsResult {
+  operationId: ID
+  error: String
+}
+
+input AddTslToPositionsInput {
+  symbol: String!
+  tslPercent: Float!
+  exchangeAccountIds: [ID!]!
+  stopTriggerPriceType: StopTriggerType!
+  token: String!
+}
+
+type AddTslToPositionsResult {
+  operationId: ID
+  error: String
+}
+
+###########################
+# ExchangeAccount
+###########################
+
+type ExchangeAccount {
+  id: ID!
+  active: Boolean!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  exchange: Exchange!
+  apiKey: String!
+  apiSecret: String!
+  orders: [Order!]!
+  positions(input: ExchangeAccountPositionsInput): ExchangeAccountPositionsResult
+  position(input: ExchangeAccountSymbolPositionInput!): ExchangeAccountSymbolPositionResult
+  membershipId: ID!
+  membership: GroupMembership!
+  groupId: ID!
+}
+
+input ExchangeAccountInput {
+  id: ID!
+  token: String!
+}
+
+input ExchangeAccountsInput {
+  membershipId: ID!
+  token: String!
+}
+
+input CreateExchangeAccountInput {
+  groupId: ID!
+  token: String!
+  apiKey: String!
+  membershipId: ID!
+  apiSecret: String!
+  exchange: Exchange!
+}
+
+type CreateExchangeAccountResult {
+  operationId: ID
+  error: String
+}
+
+input DeleteExchangeAccountInput {
+  id: ID!
+  token: String!
+}
+
+type DeleteExchangeAccountResult {
+  operationId: ID
+  error: String
+}
+
+input ToggleExchangeAccountActiveInput {
+  id: ID!
+  token: String!
+}
+
+type ToggleExchangeAccountActiveResult {
+  operationId: ID
+  error: String
+}
+
+input UpdateExchangeAccountInput {
+  id: ID!
+  apiKey: String!
+  apiSecret: String!
+  token: String!
+}
+
+type UpdateExchangeAccountResult {
+  operationId: ID
+  error: String
+}
+
+input ExchangeAccountPositionsInput {
+  limit: Int
+  offset: Int
+  token: String!
+}
+
+type ExchangeAccountPositionsResult {
+  positions: [Position!]!
+  totalCount: Int!
+}
+
+input ExchangeAccountSymbolPositionInput {
+  symbol: String!
+  token: String!
+}
+
+type ExchangeAccountSymbolPositionResult {
+  position: Position!
+}
+
+###########################
+# AsyncOperation
+###########################
+type AsyncOperation {
+  id: ID!
+  opType: OperationType!
+  success: Boolean!
+  complete: Boolean!
+  error: String
+}
+
+input AsyncOperationStatusInput {
+  id: ID!
+  token: String!
+}
+
+type AsyncOperationStatus {
+  operation: AsyncOperation!
+}
+
+###########################
+# Currency
+###########################
+union Currency = BitmexCurrency | BinanceCurrency
+
+input CurrencyInput {
+  exchange: Exchange!
+  symbol: String!
+}
+
+type CurrencyResponse {
+  currency: Currency
+}
+
+
+###########################
+# BitmexCurrency
+###########################
+
+type BitmexCurrency {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  symbol: String!
+  underlying: String!
+  active: Boolean!
+  fractionalDigits: Int
+  lastPrice: Float
+  markPrice: Float
+  maxPrice: Float
+  tickSize: Float
+}
+
+###########################
+# BinanceCurrency
+###########################
+
+type BinanceCurrency {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  symbol: String!
+  status: BinanceSymbolStatus!
+  lastPrice: Float
+  openPrice: Float
+  highPrice: Float
+  lowPrice: Float
+  priceChange: Float
+  priceChangePercent: Float
+  minPrice: String!
+  maxPrice: String!
+  tickSize: String!
+  baseAsset: String!
+  quoteAsset: String!
+  baseAssetPrecision: Int!
+  quotePrecision: Int!
+  quoteAssetPrecision: Int!
+  baseCommissionPrecision: Int!
+  quoteCommissionPrecision: Int!
+  allowsLimit: Boolean!
+  allowsMarket: Boolean!
+  allowsStopLoss: Boolean!
+  allowsStopLossLimit: Boolean!
+  allowsTakeProfit: Boolean!
+  allowsTakeProfitLimit: Boolean!
+}
+
+type MemberOrdersResult {
+  orders: [Order!]!
+  totalCount: Int!
+}
+
+type MemberPositionsResult {
+  positions: [Position!]!
+  totalCount: Int!
+}
+
+input MemberPositionsInput {
+  limit: Int
+  offset: Int
+  symbol: String
+  exchange: Exchange
+  side: PositionSide
+  token: String!
+}
+
+input MemberOrdersInput {
+  limit: Int
+  offset: Int
+  token: String!
+}
+
+input MemberExchangeAccountsInput {
+  exchange: Exchange
+  activeOnly: Boolean
+  token: String!
+}
+
+###########################
+# Enums
+###########################
+enum OrderSide {
+  BUY
+  SELL
+}
+
+enum OrderType {
+  MARKET
+  LIMIT
+}
+
+enum StopOrderType {
+  NONE
+  STOP_LIMIT
+  TRAILING_STOP
+}
+
+enum StopTriggerType {
+  LAST_PRICE
+  MARK_PRICE
+}
+
+enum Exchange {
+  BINANCE
+  BITMEX
+}
+
+enum OrderStatus {
+  NEW
+  FILLED
+  PARTIALLY_FILLED
+  CANCELED
+  REJECTED
+}
+
+enum PositionSide {
+  LONG
+  SHORT
+}
+
+enum BinanceSymbolStatus {
+  AUCTION_MATCH
+  BREAK
+  END_OF_DAY
+  HALT
+  POST_TRADING
+  PRE_TRADING
+  TRADING
+}
+
+enum OperationType {
+  # Binance
+  CANCEL_BINANCE_ORDER
+  CREATE_BINANCE_ORDER
+  UPDATE_BINANCE_ORDER
+  CREATE_BINANCE_ACCOUNT
+  DELETE_BINANCE_ACCOUNT
+  DISABLE_BINANCE_ACCOUNT
+  UPDATE_BINANCE_ACCOUNT
+
+  # Bitmex
+  CANCEL_BITMEX_ORDER
+  CREATE_BITMEX_ORDER
+  UPDATE_BITMEX_ORDER
+  CREATE_BITMEX_ACCOUNT
+  DELETE_BITMEX_ACCOUNT
+  DISABLE_BITMEX_ACCOUNT
+  UPDATE_BITMEX_ACCOUNT
+}
