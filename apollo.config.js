@@ -1,5 +1,5 @@
 module.exports = {
   service: {
-    name: 'trade-nexus-dev',
+    name: 'Trade-Nexus-Development',
   },
 }

@@ -55,11 +55,11 @@ export const ExchangeAccountMutations = {
   async createExchangeAccount(parent: any, args: any, ctx: Context) {
     const {
       input: {
-        membershipId, apiKey, apiSecret, exchange, groupId,
+        membershipId, apiKey, apiSecret, exchange,
       },
     } = args
 
-    return runCreateExchangeAccount(ctx, membershipId, apiKey, apiSecret, exchange, groupId)
+    return runCreateExchangeAccount(ctx, membershipId, apiKey, apiSecret, exchange)
   },
 
   async deleteExchangeAccount(parent: any, args: any, ctx: Context) {

@@ -685,7 +685,6 @@ type ExchangeAccount {
   position(input: ExchangeAccountSymbolPositionInput!): ExchangeAccountSymbolPositionResult
   membershipId: ID!
   membership: GroupMembership!
-  groupId: ID!
 }
 
 input ExchangeAccountInput {
@@ -697,7 +696,6 @@ input ExchangeAccountsInput {
 }
 
 input CreateExchangeAccountInput {
-  groupId: ID!
   apiKey: String!
   membershipId: ID!
   apiSecret: String!

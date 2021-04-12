@@ -147,8 +147,10 @@ export const UserMutations = {
 }
 
 export const UserResolvers = {
-  async __resolveReference(user: any, ctx: Context) {
-    return await ctx.prisma.user.findUnique({ where: { id: user.id } })
+  async memberships(user: any, args: any, ctx: Context) {
+    return ctx.prisma.groupMembership.findMany({
+      where: { memberId: ctx.userId },
+    })
   },
 }
 

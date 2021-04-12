@@ -10,6 +10,7 @@ import { createContext } from "./context"
 import { permissions } from "./permissions"
 import { logger } from "./logger";
 import { awsExports } from "./aws-exports"
+import { bootstrap } from "./bootstrap";
 
 Amplify.configure(awsExports)
 AmplifyAuth.configure(awsExports)
@@ -55,6 +56,7 @@ app.post("/payments", async (req: Request, res: Response) => {
   return res.sendStatus(200)
 })
 
-app.listen({ port: 4004 }, () => {
+app.listen({ port: 4000 }, () => {
   logger.info({ message: `🚀 Server ready` })
+  bootstrap()
 })

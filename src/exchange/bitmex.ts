@@ -1,5 +1,4 @@
 import { Prisma, PrismaClient } from "@prisma/client"
-import Bull from "bull";
 import schedule from "node-schedule"
 import { Market, Ticker } from "ccxt";
 import { bitmex as CcxtBitmex } from "ccxt.pro"
@@ -24,8 +23,6 @@ export async function initBitmex(prisma: PrismaClient) {
 class BitmexClient {
   client: CcxtBitmex
   prisma: PrismaClient
-  _loadMarketsQueue: Bull.Queue
-  _fetchTickersQueue: Bull.Queue
 
   _loadMarketsJob: schedule.Job
   _fetchTickersJob: schedule.Job

@@ -33,9 +33,7 @@ export const GroupMembershipResolvers = {
   },
 
   async member(membership: any, args: any, ctx: Context) {
-    return {
-      id: membership.memberId,
-    }
+    return ctx.prisma.user.findUnique({ where: { id: membership.memberId }})
   },
 
   async subscription(membership: any, args: any, ctx: Context) {

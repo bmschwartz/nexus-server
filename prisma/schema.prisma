@@ -201,7 +201,6 @@ model ExchangeAccount {
   id              String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   active          Boolean    @default(false)
   exchange        Exchange
-  groupId         String
   membershipId    String
   remoteAccountId String?
   apiKey          String?
