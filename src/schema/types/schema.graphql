@@ -678,8 +678,6 @@ type ExchangeAccount {
   createdAt: DateTime!
   updatedAt: DateTime!
   exchange: Exchange!
-  apiKey: String!
-  apiSecret: String!
   orders: [Order!]!
   positions(input: ExchangeAccountPositionsInput): ExchangeAccountPositionsResult
   position(input: ExchangeAccountSymbolPositionInput!): ExchangeAccountSymbolPositionResult

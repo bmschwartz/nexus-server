@@ -9,53 +9,53 @@ import {
 import { and, or, rule } from "graphql-shield";
 import { Context } from "../context";
 
-const membershipUser = rule({ cache: "strict" })(
+const membershipUserFromParent = rule({ cache: "strict" })(
   async (parent, args, ctx: Context, info) => {
-    return isMembershipUser(parent.id, args, ctx, info)
+    return isMembershipUser(ctx, parent.id)
   },
 )
 
-const membershipGroupOwner = rule({ cache: "strict" })(
+const membershipGroupOwnerFromParent = rule({ cache: "strict" })(
   async (parent, args, ctx: Context, info) => {
-    return isMembershipGroupOwner(parent.id, args, ctx, info)
+    return isMembershipGroupOwner(ctx, parent.id)
   },
 )
 
-const groupMember = rule({ cache: "strict" })(
+const groupMemberFromArgs = rule({ cache: "strict" })(
   async (parent, args, ctx: Context, info) => {
-    return isGroupMember(args.input.groupId, args, ctx, info)
+    return isGroupMember(ctx, args.input.groupId)
   },
 )
 
-const groupAdmin = rule({ cache: "strict" })(
+const groupAdminFromArgs = rule({ cache: "strict" })(
   async (parent, args, ctx: Context, info) => {
-    return isGroupAdmin(args.input.groupId, args, ctx, info)
+    return isGroupAdmin(ctx, args.input.groupId)
   },
 )
 
-const groupTrader = rule({ cache: "strict" })(
+const groupTraderFromArgs = rule({ cache: "strict" })(
   async (parent, args, ctx: Context, info) => {
-    return isGroupTrader(args.input.groupId, args, ctx, info)
+    return isGroupTrader(ctx, args.input.groupId)
   },
 )
 
 export const GroupMembershipQueryPermissions = {
-  myMembership: and(isAuthenticated, groupMember),
+  myMembership: and(isAuthenticated, groupMemberFromArgs),
   myMemberships: isAuthenticated,
-  membershipRequests: and(isAuthenticated, groupAdmin),
-  groupMembers: and(isAuthenticated, or(groupAdmin, groupTrader)),
-  membership: and(isAuthenticated, or(membershipGroupOwner, membershipUser)),
+  membershipRequests: and(isAuthenticated, groupAdminFromArgs),
+  groupMembers: and(isAuthenticated, or(groupAdminFromArgs, groupTraderFromArgs)),
+  membership: and(isAuthenticated, or(membershipGroupOwnerFromParent, membershipUserFromParent)),
 }
 
 export const GroupMembershipMutationPermissions = {
   joinGroup: isAuthenticated,
-  createMembership: and(isAuthenticated, groupAdmin),
-  updateMembershipRole: and(isAuthenticated, groupAdmin),
-  updateMembershipStatus: and(isAuthenticated, groupAdmin),
-  updateMembershipActive: and(isAuthenticated, groupAdmin),
-  deleteMembership: and(isAuthenticated, groupAdmin),
+  createMembership: and(isAuthenticated, groupAdminFromArgs),
+  updateMembershipRole: and(isAuthenticated, groupAdminFromArgs),
+  updateMembershipStatus: and(isAuthenticated, groupAdminFromArgs),
+  updateMembershipActive: and(isAuthenticated, groupAdminFromArgs),
+  deleteMembership: and(isAuthenticated, groupAdminFromArgs),
 }
 
 export const GroupMembershipPermissions = {
-  "*": and(isAuthenticated, or(membershipGroupOwner, membershipUser)),
+  "*": and(isAuthenticated, or(membershipGroupOwnerFromParent, membershipUserFromParent)),
 }

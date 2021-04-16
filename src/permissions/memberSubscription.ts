@@ -21,13 +21,13 @@ const groupAdminFromParent = rule({ cache: "strict" })(
     if (!group) {
       return false
     }
-    return isGroupAdmin(group.id, args, ctx, info)
+    return isGroupAdmin(ctx, group.id)
   },
 )
 
 const membershipUserFromArgs = rule({ cache: "strict" })(
   async (parent, args, ctx: Context, info) => {
-    return isMembershipUser(args.input.membershipId, args, ctx, info)
+    return isMembershipUser(ctx, args.input.membershipId)
   },
 )
 

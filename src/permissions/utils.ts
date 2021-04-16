@@ -14,7 +14,7 @@ export const isAuthenticated = rule()((parent, args, { userId }) => {
   return !!userId
 })
 
-export const isMembershipGroupOwner = async (membershipId, args, ctx: Context, info) => {
+export const isMembershipGroupOwner = async (ctx: Context, membershipId) => {
   let groupId: string
   try {
     const membership = await getMembership(ctx.prisma, membershipId)
@@ -36,7 +36,7 @@ export const isMembershipGroupOwner = async (membershipId, args, ctx: Context, i
   )
 }
 
-export const isMembershipUser = async (membershipId, args, ctx: Context, info) => {
+export const isMembershipUser = async (ctx: Context, membershipId) => {
   let membership
 
   try {
@@ -48,7 +48,7 @@ export const isMembershipUser = async (membershipId, args, ctx: Context, info) =
   return membership && membership.memberId === ctx.userId
 }
 
-export const isGroupAdmin = async (groupId, args, ctx: Context, info) => {
+export const isGroupAdmin = async (ctx: Context, groupId) => {
   try {
     return await validateActiveUserHasRoleAndStatus(
       ctx.prisma,
@@ -64,7 +64,7 @@ export const isGroupAdmin = async (groupId, args, ctx: Context, info) => {
   return false
 }
 
-export const isGroupTrader = async (groupId, args, ctx: Context, info) => {
+export const isGroupTrader = async (ctx: Context, groupId) => {
   const error = await validateActiveUserHasRoleAndStatus(
     ctx.prisma,
     ctx.userId,
@@ -76,7 +76,7 @@ export const isGroupTrader = async (groupId, args, ctx: Context, info) => {
   return error || true
 }
 
-export const isGroupMember = async (groupId, args, ctx: Context, info) => {
+export const isGroupMember = async (ctx: Context, groupId) => {
   const error = await validateActiveUserHasRoleAndStatus(
     ctx.prisma,
     ctx.userId,
@@ -96,7 +96,7 @@ export const isSubscriptionUser = async (ctx: Context, subscriptionId) => {
   return membership.memberId === ctx.userId
 }
 
-export const isSubscriptionInvoiceOwner = async (invoiceId, ctx: Context) => {
+export const isSubscriptionInvoiceOwner = async (ctx: Context, invoiceId) => {
   const groupMembership = await membershipForInvoice(ctx, invoiceId)
   if (!groupMembership) {
     return false

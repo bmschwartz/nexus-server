@@ -4,13 +4,13 @@ import { Context } from "../context";
 
 const groupAdmin = rule({ cache: "strict" })(
   async (parent, args, ctx: Context, info) => {
-    return isGroupAdmin(parent.id, args, ctx, info)
+    return isGroupAdmin(ctx, parent.id)
   },
 )
 
 const groupTrader = rule({ cache: "strict" })(
   async (parent, args, ctx: Context, info) => {
-    return isGroupTrader(parent.id, args, ctx, info)
+    return isGroupTrader(ctx, parent.id)
   },
 )
 

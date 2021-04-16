@@ -13,7 +13,7 @@ const subscriptionGroupAdmin = rule({ cache: "strict" })(
     if (!myGroup) {
       return false
     }
-    return isGroupAdmin(myGroup.id, args, ctx, info)
+    return isGroupAdmin(ctx, myGroup.id)
   },
 )
 
@@ -23,7 +23,7 @@ const subscriptionGroupTrader = rule({ cache: "strict" })(
     if (!myGroup) {
       return false
     }
-    return isGroupTrader(myGroup.id, args, ctx, info)
+    return isGroupTrader(ctx, myGroup.id)
   },
 )
 
