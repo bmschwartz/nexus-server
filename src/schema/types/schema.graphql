@@ -40,6 +40,7 @@ type Mutation {
   # User
   loginUser(input: LoginUserInput!): LoginResponse!
   signupUser(input: SignupUserInput!): SignUpResponse!
+  changePassword(input: ChangePasswordInput!): ChangePasswordResponse!
   verifySignUpCode(input: VerifySignUpCodeInput!): VerifySignUpCodeResponse!
 
   # Group
@@ -116,6 +117,12 @@ input SignupUserInput {
   userType: UserType!
 }
 
+input ChangePasswordInput {
+  email: String!
+  currentPassword: String!
+  newPassword: String!
+}
+
 input UserIdByEmailInput {
   email: String!
 }
@@ -135,6 +142,11 @@ type VerifySignUpCodeResponse {
 }
 
 type SignUpResponse {
+  success: Boolean!
+  error: String
+}
+
+type ChangePasswordResponse {
   success: Boolean!
   error: String
 }

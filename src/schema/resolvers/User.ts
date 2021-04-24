@@ -97,6 +97,21 @@ export const UserMutations = {
     return { success: false, error: "Signup Error" }
   },
 
+  async changePassword(parent: any, args: any, ctx: Context) {
+    const {
+      input: { email, currentPassword, newPassword },
+    } = args
+
+    try {
+      const user = await AmplifyAuth.signIn(email, currentPassword)
+      await AmplifyAuth.changePassword(user, currentPassword, newPassword)
+    } catch (e) {
+      logger.info({ message: "Change password error", error: e.message })
+      return { success: false, error: e.message }
+    }
+    return { success: true }
+  },
+
   async verifySignUpCode(parent: any, args: any, ctx: Context) {
     const {
       input: { email, code },
