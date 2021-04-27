@@ -42,6 +42,8 @@ type Mutation {
   signupUser(input: SignupUserInput!): SignUpResponse!
   changePassword(input: ChangePasswordInput!): ChangePasswordResponse!
   verifySignUpCode(input: VerifySignUpCodeInput!): VerifySignUpCodeResponse!
+  resetPassword(input: ResetPasswordInput!): ResetPasswordResponse!
+  verifyResetPasswordCode(input: VerifyResetPasswordCodeInput!): VerifyResetPasswordCodeResponse!
 
   # Group
   createGroup(input: CreateGroupInput!): Group
@@ -132,12 +134,30 @@ input VerifySignUpCodeInput {
   code: String!
 }
 
+input ResetPasswordInput {
+  email: String!
+}
+
+input VerifyResetPasswordCodeInput {
+  code: String!
+  email: String!
+  password: String!
+}
+
 type LoginResponse {
   token: String
 }
 
 type VerifySignUpCodeResponse {
   token: String
+  error: String
+}
+
+type ResetPasswordResponse {
+  error: String
+}
+
+type VerifyResetPasswordCodeResponse {
   error: String
 }
 

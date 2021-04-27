@@ -112,6 +112,21 @@ export const UserMutations = {
     return { success: true }
   },
 
+  async resetPassword(parent: any, args: any, ctx: Context) {
+    const {
+      input: { email },
+    } = args
+
+    try {
+      await AmplifyAuth.forgotPassword(email)
+    } catch (e) {
+      logger.error({ message: "Amplify Error - Reset Password Error", error: e.message })
+      return { error: e.message }
+    }
+
+    return {}
+  },
+
   async verifySignUpCode(parent: any, args: any, ctx: Context) {
     const {
       input: { email, code },
@@ -134,6 +149,20 @@ export const UserMutations = {
     return {
       token: generateToken(user.id, user.userType),
     }
+  },
+
+  async verifyResetPasswordCode(parent: any, args: any, ctx: Context) {
+    const {
+      input: { email, password, code },
+    } = args
+
+    try {
+      await AmplifyAuth.forgotPasswordSubmit(email, code, password)
+    } catch (e) {
+      logger.info({ message: "Amplify Error - Invalid Reset Password code", email, code })
+      return { error: "Invalid Email or Code" }
+    }
+    return {}
   },
 
   async loginUser(parent: any, args: any, ctx: Context) {
